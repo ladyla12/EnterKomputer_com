@@ -1,0 +1,12 @@
+{
+  "messages" : { },
+  "formats" : {
+    "date" : "yyyy MMM d",
+    "time" : "HH:mm:ss"
+  },
+  "files" : {
+    "angular" : "id",
+    "fullCalendar" : "id",
+    "moment" : "id"
+  }
+}

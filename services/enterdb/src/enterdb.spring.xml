@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.enterkomputer_com.enterdb.controller,com.enterkomputer_com.enterdb.service,com.enterkomputer_com.enterdb.dao"/>
+    <bean class="com.wavemaker.runtime.data.spring.WMPropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>
+                    classpath:enterdb.properties
+                </value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="searchSystemEnvironment" value="true"/>
+    </bean>
+
+    <bean id="enterdbHikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="jdbcUrl" value="${enterdb.url}"/>
+        <property name="driverClassName" value="${enterdb.driverClass}"/>
+        <property name="username" value="${enterdb.username}"/>
+        <property name="password" value="${enterdb.password}"/>
+        <property name="maximumPoolSize" value="${enterdb.maxPoolSize}"/>
+        <property name="minimumIdle" value="${enterdb.minPoolSize}"/>
+        <property name="connectionTimeout" value="30000" />
+        <property name="validationTimeout" value="5000" />
+        <property name="idleTimeout" value="600000" />
+        <property name="maxLifetime" value="1800000" />
+        <property name="initializationFailTimeout" value="-1" />
+        <property name="leakDetectionThreshold" value="120000" />
+        <property name="registerMbeans" value="false" />
+    </bean>
+
+    <bean id="enterdbWMManagedDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close" lazy-init="true">
+        <constructor-arg ref="enterdbHikariConfig"/>
+    </bean>
+
+    <bean id="enterdbEntityInterceptor" class="com.wavemaker.runtime.data.interceptors.WMEntityInterceptor"/>
+
+    <bean id="enterdbSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="enterdbDataSource"/>
+        <property name="packagesToScan" value="com.enterkomputer_com.enterdb"/>
+        <property name="entityInterceptor" ref="enterdbEntityInterceptor"/>
+        <property name="entityTypeFilters" ref="nonHistoryEntitiesFilter"/>
+        <property name="mappingResources">
+            <list>
+                <value>
+                enterdb-queries.hbm.xml
+                </value>
+            </list>
+        </property>
+
+        <property name="hibernateProperties" ref="enterdbHibernateProperties"/>
+    </bean>
+    <bean id="enterdbTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="enterdbSessionFactory"/>
+        <property name="defaultTimeout" value="${enterdb.transactionTimeout}"/>
+    </bean>
+    <bean id="enterdbTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="enterdbSessionFactory"/>
+    </bean>
+    
+    <bean id="enterdbWMQLTypeHelper" class="com.wavemaker.runtime.data.dao.query.types.wmql.WMQLDefaultTypeHelper" lazy-init="false" />
+    
+    <bean id="enterdbWMQueryExecutor" class="com.wavemaker.runtime.data.dao.query.WMQueryExecutorImpl">
+        <property name="template" ref="enterdbTemplate"/>
+    </bean>
+    <bean id="enterdbWMProcedureExecutor" class="com.wavemaker.runtime.data.dao.procedure.WMProcedureExecutorImpl">
+        <property name="template" ref="enterdbTemplate"/>
+        <property name="serviceId" value="enterdb"/>
+    </bean>
+
+    <bean id="enterdbHibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.dialect">
+                ${enterdb.dialect}
+                </prop>
+                <prop key="hibernate.show_sql">
+                    false
+                </prop>
+                <prop key="hibernate.globally_quoted_identifiers">
+                    false
+                </prop>
+                <prop key="hibernate.hbm2ddl.auto">
+                ${enterdb.hbm2ddl}
+                </prop>
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">
+                    false
+                </prop>
+                <prop key="hibernate.schema_update.unique_constraint_strategy">
+                    skip
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="enterdbPageableHandlerMethodResolver" class="com.wavemaker.runtime.resolver.WMPageableHandlerMethodArgumentResolver" >
+        <property name="pageParameterName" value="page"/>
+        <property name="sizeParameterName" value="size"/>
+        <property name="oneIndexedParameters" value="true"/>
+        <property name="maxPageSize" value="${enterdb.maxPageSize}"/>
+        <property name="fallbackPageable">
+            <bean  class="org.springframework.data.domain.PageRequest">
+                <constructor-arg  value="0"/>
+                <constructor-arg  value="20"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="enterdbDataSource" class="com.wavemaker.runtime.data.datasource.WMDataSource">
+        <property name="dataSourceType" value="${enterdb.dataSourceType}"/>
+        <property name="jndiName" value="${enterdb.jndiName}"/>
+        <property name="serviceId" value="enterdb"/>
+    </bean>
+
+
+    <tx:annotation-driven/>
+
+</beans>
+

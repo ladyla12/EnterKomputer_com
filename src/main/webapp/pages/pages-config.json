@@ -14,4 +14,8 @@
   "name" : "leftnav",
   "type" : "LEFTNAV",
   "params" : [ ]
+}, {
+  "name" : "listEmployee",
+  "type" : "PARTIAL",
+  "params" : [ ]
 } ]

@@ -1,0 +1,6 @@
+{
+  "id" : "enterdb",
+  "type" : "DataService",
+  "packageNames" : [ "com.enterkomputer_com.enterdb" ],
+  "title" : "enterdb"
+}

@@ -1,23 +1,23 @@
 <wm-page name="page1">
-  <wm-mobile-navbar title="Login" backbutton="false"></wm-mobile-navbar>
-  <wm-content name="content1">
-    <wm-page-content columnwidth="12">
-      <wm-login name="loginForm" data-ng-controller="loginFormController">
-       <wm-form>
-         <wm-composite name="userNameField">
-           <wm-label caption="Username" name="userNameLabel" class="control-label"></wm-label>
-           <wm-text placeholder="Enter username" name="j_username" class="app-login-username" width="100%" autocomplete="off" autocorrect="off" autocapitalize="off" updateon="default"></wm-text>
-         </wm-composite>
-         <wm-composite name="passwordField">
-           <wm-label caption="Password" name="passwordLabel" class="control-label"></wm-label>
-           <wm-text type="password" name="j_password" placeholder="Enter password" class="app-login-password" width="100%" autocomplete="off" autocorrect="off" autocapitalize="off" updateon="default"></wm-text>
-         </wm-composite>
-         <wm-button type="submit" caption="Sign in" width="100%" class="app-login-button btn-primary" name="loginButton"></wm-button>
-         <wm-composite name="remembermeField" class="app-login-rememberme">
-           <wm-checkbox caption="Remember Me" name="j_rememberme"></wm-checkbox>
-         </wm-composite>
-       </wm-form>
-      </wm-login>
-    </wm-page-content>
-  </wm-content>
+    <wm-mobile-navbar title="Login" name="mobile_navbar1" backbutton="false"></wm-mobile-navbar>
+    <wm-content name="content1">
+        <wm-page-content name="page_content1" columnwidth="12">
+            <wm-login data-ng-controller="loginFormController" name="loginForm">
+                <wm-form name="form1">
+                    <wm-composite name="userNameField">
+                        <wm-label class="control-label" caption="Username" name="userNameLabel"></wm-label>
+                        <wm-text class="app-login-username" name="j_username" placeholder="Enter username" autocomplete="off" width="100%" updateon="default" autocapitalize="off" autocorrect="off"></wm-text>
+                    </wm-composite>
+                    <wm-composite name="passwordField">
+                        <wm-label class="control-label" caption="Password" name="passwordLabel"></wm-label>
+                        <wm-text class="app-login-password" type="password" name="j_password" placeholder="Enter password" autocomplete="off" width="100%" updateon="default" autocapitalize="off" autocorrect="off"></wm-text>
+                    </wm-composite>
+                    <wm-button class="app-login-button btn-primary" type="submit" caption="Sign in" name="loginButton" width="100%" on-focus="loginButtonFocus($event, widget)"></wm-button>
+                    <wm-composite class="app-login-rememberme" name="remembermeField">
+                        <wm-checkbox caption="Remember Me" name="j_rememberme"></wm-checkbox>
+                    </wm-composite>
+                </wm-form>
+            </wm-login>
+        </wm-page-content>
+    </wm-content>
 </wm-page>
